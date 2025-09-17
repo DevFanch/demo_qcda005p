@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Accès refusé</h1>
+	<p>
+		La page demandée n'a pas pu être trouvée. Vérifiez l'orthographe ou
+        <a href="{{ path('app_home') }}">retour à la page d'accueil</a>.
+	</p>
+{% endblock %}
