@@ -21,5 +21,11 @@
             </tr>
         {% endfor %}
     </table>
+    {% if is_granted('ROLE_ADMIN') or app.user == course.author %}
+        <a href="{{ path('course_edit', {'id': course.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('course_delete', {'id': course.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+    {% endif %}
 {% endblock %}
 

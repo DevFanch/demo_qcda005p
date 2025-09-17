@@ -11,15 +11,11 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        <pre>
-            {{ dump(app.user) }}
-        </pre>
-
+    <body class="d-flex flex-column min-vh-100">
         <header>
             {% include 'partials/_navbar.html.twig' %}
         </header>
-        <main class="container">
+        <main class="container flex-grow-1">
             {% for label,messages in app.flashes %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label }}" role="alert">{{ message }}</div>
@@ -28,9 +24,7 @@
             {% block body %}{% endblock %}
         </main>
         <footer>
-            <div>&copy;
-                {{ "now" | date("Y") }}
-                ENI Ecole Informatique</div>
+            <div>&copy; {{ "now" | date("Y") }} - {{ app_name }} - ENI Ecole Informatique</div>
         </footer>
 
     </body>

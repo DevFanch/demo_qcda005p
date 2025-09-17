@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Form\CourseType;
 use App\Repository\CourseRepository;
 use App\Repository\TrainerRepository;
+use App\Service\NotifCourseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,15 +34,21 @@ final class CourseController extends AbstractController
     }
 
     #[Route('/ajouter', name: 'create', methods: ['GET','POST'])]
-    public function create(Request $request,EntityManagerInterface $em): Response
+    public function create(Request $request,EntityManagerInterface $em, NotifCourseService $notifCourseService): Response
     {
         $course = new Course();
         $courseForm = $this->createForm(CourseType::class, $course);
         $courseForm->handleRequest($request);
         if($courseForm->isSubmitted() && $courseForm->isValid()){
+            //Set Current User as Author
+            $course->setAuthor($this->getUser());
             $em->persist($course);
             $em->flush();
 
+            //Notify Admin
+            $notifCourseService->notifyAdminNewCourse($course, $this->getUser());
+            
+            //Add Flash Message
             $this->addFlash('success','Le cours a été ajouté');
             return $this->redirectToRoute('course_show', ['id'=>$course->getId()]);
         }

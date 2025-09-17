@@ -48,6 +48,9 @@ class Course
     #[ORM\ManyToMany(targetEntity: Trainer::class, inversedBy: 'courses')]
     private Collection $trainers;
 
+    #[ORM\ManyToOne(inversedBy: 'courses')]
+    private ?User $author = null;
+
     public function __construct()
     {
         $this->dateCreated = new \DateTimeImmutable();
@@ -165,6 +168,18 @@ class Course
     public function removeTrainer(Trainer $trainer): static
     {
         $this->trainers->removeElement($trainer);
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }
