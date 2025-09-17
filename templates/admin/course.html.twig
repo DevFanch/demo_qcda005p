@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1 class="mb-4">Liste des cours</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Nom du cours</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                    <tr data-course-id="{{ course.id }}">
+                        <td class="fw-semibold">{{ course.name }}</td>
+                        <td class="status-cell">
+                            {% if course.published %}
+                                <span class="badge bg-success">Publié</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Non publié</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if not course.published %}
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline-success btn-sm me-1 btn-toggle-status"
+                                    data-id="{{ course.id }}"
+                                    data-action="publier"
+                                    title="Publier"
+                                >
+                                    <i class="bi bi-upload"></i> Publier
+                                </button>
+                            {% else %}
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline-warning btn-sm me-1 btn-toggle-status"
+                                    data-id="{{ course.id }}"
+                                    data-action="depublier"
+                                    title="Dépublier"
+                                >
+                                    <i class="bi bi-x-circle"></i> Dépublier
+                                </button>
+                            {% endif %}
+                            <a href="{{ path('admin_course_delete', {'id': course.id, 'token': csrf_token('delete-'~course.id)}) }}" class="btn btn-outline-danger btn-sm" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                                <i class="bi bi-trash"></i> Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">Aucun cours trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn-toggle-status');
+            buttons.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const courseId = this.getAttribute('data-id');
+                    const row = this.closest('tr');
+                    const statusCell = row.querySelector('.status-cell');
+                    const url = "{{ path('admin_course_status', {'id': 'COURSE_ID'}) }}".replace('COURSE_ID', courseId);
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token("authenticate") }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Mettre à jour le badge de statut
+                            if (data.published) {
+                                statusCell.innerHTML = '<span class="badge bg-success">Publié</span>';
+                                this.className = 'btn btn-outline-warning btn-sm me-1 btn-toggle-status';
+                                this.innerHTML = '<i class="bi bi-x-circle"></i> Dépublier';
+                                this.setAttribute('data-action', 'depublier');
+                                this.setAttribute('title', 'Dépublier');
+                            } else {
+                                statusCell.innerHTML = '<span class="badge bg-secondary">Non publié</span>';
+                                this.className = 'btn btn-outline-success btn-sm me-1 btn-toggle-status';
+                                this.innerHTML = '<i class="bi bi-upload"></i> Publier';
+                                this.setAttribute('data-action', 'publier');
+                                this.setAttribute('title', 'Publier');
+                            }
+                        } else {
+                            alert('Une erreur est survenue lors du changement de statut.');
+                        }
+                    })
+                    .catch(() => {
+                        alert('Erreur lors de la communication avec le serveur.');
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -20,7 +20,7 @@ final class CourseController extends AbstractController
     #[Route('/', name: 'list', methods: ['GET'])]
     public function list(CourseRepository $courseRepository): Response
     {
-        $courses = $courseRepository->findLastCourses();
+        $courses = $courseRepository->findLastPublishedCourses();
         return $this->render('course/list.html.twig', [
             'courses' => $courses,
         ]);
@@ -72,21 +72,6 @@ final class CourseController extends AbstractController
             'courseForm'=>$courseForm
 
         ]);
-    }
-
-    #[Route('/{id}/supprimer', name: 'delete', requirements:['id'=>'\d+'], methods: ['GET'])]
-    public function delete(Course $course, Request $request,EntityManagerInterface $em): Response
-    {
-        if($this->isCsrfTokenValid('delete-'.$course->getId(), $request->get('token'))){
-            try{
-                $em->remove($course);
-                $em->flush();
-                $this->addFlash('success','Le cours a été supprimé');
-            }catch (\Exception $e){
-                $this->addFlash('danger','Le cours n\'a pu être supprimé');
-            }
-        }
-        return $this->redirectToRoute('course_list');
     }
 
     #[Route('/{id}/formateurs', name: 'trainers', requirements: ['id' => '\d+'], methods: ['GET'])]

@@ -1,48 +1,34 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Liste des cours - {{ parent() }}</h1>
-    <table class="table-sm table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Titre</th>
-                <th>Durée (jours)</th>
-                <th>Date de Création</th>
-                <th>Catégorie</th>
-                <th>Formateurs</th>
-                <th>Publié</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.name }}</td>
-                <td>{{ course.duration }}</td>
-                <td>{{ course.dateCreated | date('d/m/Y') }}</td>
-                <td>{{ course.category ? course.category.name : '?' }}</td>
-                <td>{{ course.trainers | length }}</td>
-                <td>{{ course.published ? "X" : ""}}</td>
-                <td>
-                    {% if is_granted('ROLE_PLANNER') and (course.trainers.count > 0) %}
-                        <a href="{{ path('course_show',{'id':course.id}) }}" title="Détail du cours">Détail</a>
-                        <a href="{{ path('course_edit',{'id':course.id}) }}" title="Modifier le cours">Modifier</a>
-                        <a href="{{ path('course_delete',{'id':course.id,'token':csrf_token('delete-'~course.id)}) }}" title="Supprimer le cours">Supprimer</a>
-                    {% else %}
-                        <a href="{{ path('course_show',{'id':course.id}) }}" title="Détail du cours">Détail</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="7">Aucune donnée dans la base.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1>Liste des cours</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for course in courses %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.name }}</h5>
+                        <p class="card-text mb-1">
+                            <strong>Durée :</strong> {{ course.duration }} jour{{ course.duration > 1 ? 's' : '' }}<br>
+                            <strong>Date de création :</strong> {{ course.dateCreated | date('d/m/Y') }}<br>
+                            <strong>Catégorie :</strong> {{ course.category ? course.category.name : '?' }}<br>
+                            <strong>Formateurs :</strong> {{ course.trainers | length }}<br>
+                            <strong>Publié :</strong> {{ course.published ? 'Oui' : 'Non' }}
+                        </p>
+                        <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-primary mt-2" title="Voir ce cours">Voir ce cours</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Aucune donnée dans la base.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block title %}
 Les cours | {{ parent() }}
 {% endblock %}
-
