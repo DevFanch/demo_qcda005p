@@ -1,7 +1,8 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['bootstrap_5_layout.html.twig']
-
+    globals:
+        app_name: 'Teach Me'
 
 when@test:
     twig:

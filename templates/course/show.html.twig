@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ course.name}}| {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ course.name }}</h1>
+    {# Afficher le détail du cours #}
+    <p>{{ course.content }}</p>
+    <p>Catégorie: {{ course.category ? course.category.name : '?' }}</p>
+    <p>Durée (jours) : {{ course.duration }}</p>
+    <p>Date de création : {{ course.dateCreated | date('d/m/Y') }}</p>
+    <p>Publié : {{ course.published ? "Oui":"Non" }}</p>
+    <p>Nombre de formateurs : {{ course.trainers | length }}</p>
+    <p>Liste des formateurs :</p>
+    <table>
+        {% for trainer in course.trainers %}
+            <tr>
+                <td>{{ trainer.firstname ~ ' ' ~ trainer.lastname }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

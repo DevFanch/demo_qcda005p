@@ -24,18 +24,24 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
-
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week
+                path: /
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-
+    role_hierarchy:
+        ROLE_PLANNER: ROLE_USER
+        ROLE_DIRECTOR: ROLE_PLANNER
+        ROLE_ADMIN: ROLE_DIRECTOR
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_DIRECTOR }
+        - { path: ^/course/create$, roles: ROLE_USER }
 
 when@test:
     security:

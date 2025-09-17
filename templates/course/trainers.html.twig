@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Formateurs du cours
+	{{ course.name }}
+	|
+	{{ parent() }}
+{% endblock %}
+{% block body %}
+	<h1>Formateurs du cours "{{ course.name }}"</h1>
+	<table>
+		{% for trainer in trainers %}
+			<tr>
+				<td>{{ trainer.firstname ~ ' ' ~ trainer.lastname }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
+

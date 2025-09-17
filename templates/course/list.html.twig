@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des cours - {{ parent() }}</h1>
+    <table class="table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Durée (jours)</th>
+                <th>Date de Création</th>
+                <th>Catégorie</th>
+                <th>Formateurs</th>
+                <th>Publié</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.name }}</td>
+                <td>{{ course.duration }}</td>
+                <td>{{ course.dateCreated | date('d/m/Y') }}</td>
+                <td>{{ course.category ? course.category.name : '?' }}</td>
+                <td>{{ course.trainers | length }}</td>
+                <td>{{ course.published ? "X" : ""}}</td>
+                <td>
+                    {% if is_granted('ROLE_PLANNER') and (course.trainers.count > 0) %}
+                        <a href="{{ path('course_show',{'id':course.id}) }}" title="Détail du cours">Détail</a>
+                        <a href="{{ path('course_edit',{'id':course.id}) }}" title="Modifier le cours">Modifier</a>
+                        <a href="{{ path('course_delete',{'id':course.id,'token':csrf_token('delete-'~course.id)}) }}" title="Supprimer le cours">Supprimer</a>
+                    {% else %}
+                        <a href="{{ path('course_show',{'id':course.id}) }}" title="Détail du cours">Détail</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">Aucune donnée dans la base.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block title %}
+Les cours | {{ parent() }}
+{% endblock %}
+
