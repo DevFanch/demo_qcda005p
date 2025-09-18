@@ -59,8 +59,12 @@ final class CourseController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'edit', requirements:['id'=>'\d+'], methods: ['GET','POST'])]
+    // #[IsGranted("course_edit", "course", message: 'Vous n\'êtes pas autorisé à modifier ce cours')]
     public function edit(Course $course, Request $request,EntityManagerInterface $em): Response
     {
+        // Check if the user is authorized to edit the course by using the voter
+        $this->denyAccessUnlessGranted('course_edit', $course, 'Vous n\'êtes pas autorisé à modifier ce cours');
+
         $courseForm = $this->createForm(CourseType::class, $course);
         $courseForm->handleRequest($request);
         if($courseForm->isSubmitted() && $courseForm->isValid()){
