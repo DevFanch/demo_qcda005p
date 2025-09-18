@@ -67,4 +67,11 @@ final class AdminController extends AbstractController
         }
         return $this->redirectToRoute('admin_course');
     }
+
+    #[Route('/course-status', name: 'course_status')]
+    #[IsGranted('ROLE_DIRECTOR', message: 'Vous n\'avez pas les permissions de visualiser le statut des cours : cron')]
+    public function status(): Response
+    {
+        return $this->render('admin/course_status.html.twig');
+    }
 }

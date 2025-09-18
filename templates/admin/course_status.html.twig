@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Statut des cours{% endblock %}
+{% block body %}
+<div class="container my-5">
+  <h1 class="fs-2 fw-semibold mb-4">
+    Statut des cours <small class="text-muted fs-6">(mis à jour par <code>app:course:update-status</code>)</small>
+  </h1>
+
+  <div id="course-status" class="bg-white shadow-sm rounded p-4 border">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="small text-secondary">Dernière mise à jour</div>
+      <div id="last_update" class="small font-monospace text-dark">-</div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <div class="p-3 bg-light rounded">
+          <div class="form-text mb-1">Nombre d'exécutions</div>
+          <div id="count" class="fs-4 fw-bold">-</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-light rounded">
+          <div class="form-text mb-1">Statut</div>
+          <div id="status" class="fs-4 fw-bold">-</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-light rounded">
+          <div class="form-text mb-1">Message</div>
+          <div id="message" class="small">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="small text-muted">
+      Dernier rafraîchissement : <span id="fetched_at">-</span>
+    </div>
+  </div>
+
+  <p class="mt-4 small text-secondary">
+    Ce panneau interroge <code>/json/courses.json</code> chaque minute et se met à jour automatiquement.
+  </p>
+
+  <script type="module">
+    import "/assets/course-status.js";
+  </script>
+</div>
+{% endblock %}

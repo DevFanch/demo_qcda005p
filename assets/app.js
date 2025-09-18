@@ -14,5 +14,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Import Bootstrap JS (optionnel, selon vos besoins)
 import "bootstrap";
 import './styles/app.css';
+import './course-status.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
